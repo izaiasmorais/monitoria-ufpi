@@ -18,14 +18,15 @@ import {
 } from "@/components/ui/popover";
 
 interface ComboboxProps {
-	items: { label: string; value: string }[];
+	items: { label: string; value: string | number }[];
 	entity: string;
 	translatedEntity: string;
 	placeholder?: string;
 	emptyMessage?: string;
 	onChange?: (value: string) => void;
-	value: string;
-	setValue: React.Dispatch<React.SetStateAction<string>>;
+	value: string | number;
+	setValue?: React.Dispatch<React.SetStateAction<string>>;
+	className?: string;
 }
 
 export function Combobox({
@@ -35,6 +36,7 @@ export function Combobox({
 	onChange,
 	value,
 	setValue,
+	className,
 }: ComboboxProps) {
 	const [open, setOpen] = React.useState(false);
 
@@ -45,7 +47,7 @@ export function Combobox({
 					variant="outline"
 					role="combobox"
 					aria-expanded={open}
-					className="w-[300px] justify-between"
+					className={cn("max-w-max min-w-[200px] justify-between", className)}
 				>
 					{value
 						? items.find((item) => item.value === value)?.label
@@ -67,10 +69,10 @@ export function Combobox({
 							{items.map((item) => (
 								<CommandItem
 									key={item.value}
-									value={item.value}
+									value={item.value.toString()}
 									onSelect={(currentValue) => {
-										setValue(currentValue === value ? "" : currentValue);
 										setOpen(false);
+										setValue?.(currentValue === value ? "" : currentValue);
 										onChange?.(currentValue);
 									}}
 								>

@@ -36,6 +36,21 @@ import { courses } from "@/mocks/courses";
 import { scholarshipTypes } from "@/mocks/scholarship-types";
 import { periods } from "@/mocks/period";
 
+const paginationSize = [
+	{
+		value: 5,
+		label: "5",
+	},
+	{
+		value: 10,
+		label: "10",
+	},
+	{
+		value: 15,
+		label: "15",
+	},
+];
+
 export function StudentsTable() {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -47,6 +62,10 @@ export function StudentsTable() {
 	const [period, setPeriod] = React.useState<string>("");
 	const [course, setCourse] = React.useState<string>("");
 	const [scholarshipType, setScholarshipType] = React.useState<string>("");
+	const [pagination, setPagination] = React.useState({
+		pageIndex: 0,
+		pageSize: 15,
+	});
 
 	const table = useReactTable({
 		data: students,
@@ -59,18 +78,21 @@ export function StudentsTable() {
 		getFilteredRowModel: getFilteredRowModel(),
 		onColumnVisibilityChange: setColumnVisibility,
 		onRowSelectionChange: setRowSelection,
+		onPaginationChange: setPagination,
 		state: {
 			sorting,
 			columnFilters,
 			columnVisibility,
 			rowSelection,
+			pagination,
 		},
 	});
 
 	return (
 		<div className="w-full space-y-4">
-			<div className="flex items-center gap-4">
+			<div className="flex items-center gap-4 flex-wrap">
 				<SearchInput
+					className="lg:w-[400px]"
 					placeholder="Pesquisar alunos..."
 					value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
 					onChange={(event) =>
@@ -213,10 +235,24 @@ export function StudentsTable() {
 				</Table>
 			</div>
 
-			<div className="flex items-center justify-end space-x-2">
-				<div className="flex-1 text-sm text-muted-foreground">
-					{table.getFilteredSelectedRowModel().rows.length} de{" "}
-					{table.getFilteredRowModel().rows.length} linha(s) selecionadas(s).
+			<div className="flex items-center justify-between space-x-2">
+				<div className="flex items-center gap-2">
+					<span className="text-sm">Itens por página: </span>
+
+					<Combobox
+						className="w-[100px]"
+						items={paginationSize}
+						entity="itemsPerPage"
+						translatedEntity="Items por página"
+						placeholder="Items por página"
+						value={pagination.pageSize}
+						onChange={(value: string) =>
+							table.setPagination({
+								pageIndex: 0,
+								pageSize: parseInt(value),
+							})
+						}
+					/>
 				</div>
 
 				<div className="space-x-2">
