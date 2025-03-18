@@ -3,20 +3,9 @@ import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Student } from "@/@types/student";
 
-export type StudentsTableItem = {
-	id: string;
-	name: string;
-	registration: string;
-	course: string;
-	grade: number;
-	ira: number;
-	final_grade: number;
-	scholarshipType: string;
-	period: string;
-};
-
-export const studentsTableFields: ColumnDef<StudentsTableItem>[] = [
+export const studentsTableFields: ColumnDef<Student>[] = [
 	{
 		id: "select",
 		header: ({ table }) => (
@@ -38,22 +27,6 @@ export const studentsTableFields: ColumnDef<StudentsTableItem>[] = [
 		),
 		enableSorting: false,
 		enableHiding: false,
-	},
-	{
-		accessorKey: "name",
-		header: ({ column }) => (
-			<Button
-				variant="ghost"
-				className="!p-0 hover:bg-transparent"
-				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-			>
-				Nome
-				<ArrowUpDown />
-			</Button>
-		),
-		cell: ({ row }) => (
-			<div className="capitalize font-semibold">{row.getValue("name")}</div>
-		),
 	},
 	{
 		accessorKey: "registration",
@@ -84,8 +57,10 @@ export const studentsTableFields: ColumnDef<StudentsTableItem>[] = [
 			</Button>
 		),
 		cell: ({ row }) => (
-			<Badge className="rounded-full text-foreground shadow-none bg-muted hover:bg-muted font-semibold
-			">
+			<Badge
+				className="rounded-full text-foreground shadow-none bg-muted hover:bg-muted font-semibold
+			"
+			>
 				{row.getValue("course")}
 			</Badge>
 		),
